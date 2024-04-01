@@ -5,4 +5,3 @@ address = "http://transport.opendata.ch/v1/connections?from=" + origin + "&to=" 
 print(address)
 r = (rq.get(address)).json()
 deptplatform = r["connections"][0]['from']['station']
-
