@@ -50,5 +50,37 @@ for recipedescription in reformatted_allrecipeslist:
     #print(f'{recipename}: {recipedict_withingredients[recipename]}\n')
 
 
+from PIL import Image
+import urllib.request
+import io
+
+URL = reformatted_allrecipeslist[25]["strMealThumb"]
+
+
+with urllib.request.urlopen(URL) as url:
+    f = io.BytesIO(url.read())
+
+    
+img = Image.open (f)
+
+img.show ()
+
+import requests
+import json
+
+response_API = requests.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
+
+data =response_API.text
+parse_json = json.loads(data)
+new_variable = parse_json["meals"][9]["strIngredient"]
+
+liste = []
+for number in range(0,len(parse_json ["meals"])-1):
+    ingredient = parse_json["meals"][number]["strIngredient"]
+    liste.append (ingredient)
+list.sort (liste)
+print (liste)
+
+print ("Which ingredients do you want to use?", new_variable)
 
 
