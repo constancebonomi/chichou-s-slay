@@ -44,7 +44,7 @@ class Chosen_Meal:
 
 #importing ingredients directly from TheMealDB API
 def fetch_ingredients():
-    response = requests.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
+    response = rq.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
     data = response.json()
     ingredients = [item["strIngredient"] for item in data["meals"]]
     return ingredients
@@ -99,7 +99,7 @@ if selected_ingredients:
     recommended_recipes = recipesearch(selected_ingredients, recipedict_withingredients)
     for recipe_name, score in recommended_recipes.items():
         if st.button(f"{recipe_name} (matches: {score})"):
-            response = requests.get(f"https://www.themealdb.com/api/json/v1/1/search.php?s={recipe_name}")
+            response = rq.get(f"https://www.themealdb.com/api/json/v1/1/search.php?s={recipe_name}")
             recipe_details = response.json()['meals'][0]
             image_url = recipe_details['strMealThumb']
             st.image(image_url, caption=recipe_name, width=300)
