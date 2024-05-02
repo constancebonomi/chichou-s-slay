@@ -47,3 +47,6 @@ for recipedescription in reformatted_allrecipeslist:
 #This is a dictionary of all recipes with their respective ingredients. You can print it below.
 #for recipename in recipedict_withingredients:
     #print(f'{recipename}: {recipedict_withingredients[recipename]}\n')
+
+with open(os.path.join("final_code", "recipedict_withingredients.json"), "w") as f:
+    json.dump(recipedict_withingredients, f)
