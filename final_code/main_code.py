@@ -4,7 +4,7 @@ import json
 from PIL import Image
 import io
 
-recipedict_withingredients = dict(open("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withingredients.json", "r"))
+recipedict_withingredients = dict(rq.get("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withingredients.json"))
 
 def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {}):
     
