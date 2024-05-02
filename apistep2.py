@@ -62,6 +62,7 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
     for recipename, recipe_ingredients_list in recipedict_withingredients.items():
         for recipe_ingredient in set(recipe_ingredients_list):
             #set because some TheMealDB recipes contain duplicate ingredients
+            #The function below creates a score field for a recipe if it's empty, and adds one if it exists
             if recipe_ingredient in chosen_ingredients_list:
                 if recipedict_withscores.get(recipename) == None:
                        recipedict_withscores[recipename] = 1
@@ -73,8 +74,10 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
     recipes_result = {}
     recipe_results_length = 0
     for diminishing_similarity_coefficient in range(3):
+        #this is a variable that will be substracted from len(chosen ingredients), so that the most fitting recipes appear first
         for recipestr, recipescore in recipedict_withscores.items():
             if recipe_results_length < 5:
+                #the maximal number of recommendations is set to five.
                 if recipescore == (len(chosen_ingredients_list) - diminishing_similarity_coefficient):
                         recipes_result[recipestr] = recipescore
                         recipe_results_length += 1
@@ -90,17 +93,21 @@ import urllib.request
 import io
 
 class Chosen_Meal:
+    #we define a class Chosen_Meal that is destined to facilitate working with the results of the recipe_search function
     
-    def __init__ (self, mealname):
+    def __init__ (self, mealname): #three attributes: name, full recipe attributes dictionary, recipe full text
         self.mealname = str(mealname)
         self.fullrecipe = rq.get("https://www.themealdb.com/api/json/v1/1/search.php?s="+str(mealname)).json()["meals"][0]
+        #the recipe attributes dictionary is imported live from the TheMealDB API
         self.recipetext = self.fullrecipe["strInstructions"]
         
         self.ingredientswithquantities = {}
+        #dictionary of all recipe ingredients with their quantities
         for numbertotwenty in range(1, 21):
             self.ingredientswithquantities[self.fullrecipe["strIngredient"+str(numbertotwenty)]] = f'{str(self.fullrecipe["strMeasure"+str(numbertotwenty)])}'
         
         self.ingredients_text = ""
+        #text form of the ingredients list
         for ingredient, quantity in self.ingredientswithquantities.items():
             if ingredient:
                 self.ingredients_text += f'{ingredient}: {quantity}\n'
@@ -108,12 +115,14 @@ class Chosen_Meal:
 
     
     def __str__ (self):
+        #string representation shows text with recipe name, a formatted list of ingredients, and the recipe preparation text
         return f'''{self.mealname}:\n\n
     Ingredients:\n
     {self.ingredients_text}\n
     {self.recipetext}'''
     
     def photo(self):
+        #object method to show a photo
         image_URL = self.fullrecipe["strMealThumb"]
         with urllib.request.urlopen(image_URL) as url:
             f = io.BytesIO(url.read())
