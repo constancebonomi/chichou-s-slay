@@ -34,11 +34,8 @@ class Chosen_Meal:
     
     def photo(self):
         #object method to show a photo
-        image_URL = self.fullrecipe["strMealThumb"]
-        with urllib.request.urlopen(image_URL) as url:
-            f = io.BytesIO(url.read())
-        img = Image.open (f)
-        return img.show ()
+        image_url = self.fullrecipe["strMealThumb"]
+        return image_url
 
 
 
@@ -103,21 +100,14 @@ ingredients = fetch_ingredients()
 selected_ingredients = list(st.multiselect('Select your ingredients:', ingredients))
 
 if selected_ingredients:
-    recipes = fetch_recipes()
+    recipes = recipedict_withingredients
     recommended_recipes = recipesearch(selected_ingredients, recipedict_withingredients)
+    recommended_recipes_objects = reciperesult_objects(recommended_recipes)
     for recipe_name, score in recommended_recipes.items():
         if st.button(f"{recipe_name} (matches: {score})"):
-            response = rq.get(f"https://www.themealdb.com/api/json/v1/1/search.php?s={recipe_name}")
-            recipe_details = response.json()['meals'][0]
-            image_url = recipe_details['strMealThumb']
-            st.image(image_url, caption=recipe_name, width=300)
+            chosen_meal = Chosen_Meal(str(recipe_name))
+            st.image(chosen_meal.photo(), caption=recipe_name, width=300)
             st.write(f"### Ingredients and Instructions for {recipe_name}")
-            for i in range(1, 21):
-                ingredient = recipe_details.get(f'strIngredient{i}', None)
-                measure = recipe_details.get(f'strMeasure{i}', None)
-                if ingredient and measure:
-                    st.write(f"{ingredient}: {measure}")
-            st.write("### Instructions")
-            st.write(recipe_details['strInstructions'])
+            st.write(chosen_meal)
 else:
     st.write("Please select some ingredients to find recipes.")
