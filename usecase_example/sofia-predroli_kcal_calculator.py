@@ -69,7 +69,8 @@ def get_recipes():
             measure, ingredient, weight_in_gram = [part.strip() for part in parts]
             map_strMeasure_strIngredient_2_weight[(ingredient.lower(), measure.lower())] = weight_in_gram.replace("g", "")
  
- 
+ #The below for loop joins the two dictionaries together and fills the new dictionary called output_data
+    #with calorie amounts per 100g, in the format described in the ''' descriptive string ''' above.
     for letter in alphabet_letter_list:
         json_filename = os.path.join("data_recipes", "recipes_alphabetical_order", f"{letter}.json")
 
