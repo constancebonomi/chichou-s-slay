@@ -1,3 +1,11 @@
+import streamlit as st
+import requests as rq
+import json
+from PIL import Image
+import io
+
+recipedict_withingredients = dict(open("recipe", "r"))
+
 def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {}):
     
     #This function takes a list of ingredients and returns the 5 recipes in the TheMealDB database
@@ -10,7 +18,7 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
     for recipename, recipe_ingredients_list in recipedict_withingredients.items():
         for recipe_ingredient in set(recipe_ingredients_list):
             #set because some TheMealDB recipes contain duplicate ingredients
-            #The function below creates a score field for a recipe if it's empty, and adds one if it exists
+            #The loop below creates a score field for a recipe if it's empty, and adds one if it exists
             if recipe_ingredient in chosen_ingredients_list:
                 if recipedict_withscores.get(recipename) == None:
                        recipedict_withscores[recipename] = 1
