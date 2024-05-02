@@ -86,7 +86,15 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
             
     return recipes_result
 
-
+def recipresult_objects(resultsdictionary = {}):
+    chosen_recipes_names_list = list(resultsdictionary.keys())
+    recipe1 = Chosen_Meal(chosen_recipes_names_list[0])
+    recipe2 = Chosen_Meal(chosen_recipes_names_list[1])
+    recipe3 = Chosen_Meal(chosen_recipes_names_list[2])
+    recipe4 = Chosen_Meal(chosen_recipes_names_list[3])
+    recipe5 = Chosen_Meal(chosen_recipes_names_list[4])
+    reciperesult_objects_list = [recipe1, recipe2, recipe3, recipe4, recipe5]
+    return reciperesult_objects_list
 
 
 # Streamlit interface component
