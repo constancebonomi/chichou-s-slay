@@ -16,7 +16,7 @@ def download_recipes():
 
 #We previously ChatGPT-generated a list of calorie amounts per 100g serving for each of the ingredients in TheMealDB API.
 #get_recipes cleans up this list, joins it with our existing TheMealDB ingredients list,
-#and converts the quantities provided by TheMealDB (example: table spoon) to multiples of 100g
+#and converts the quantities provided by TheMealDB (example: table spoon) to grammes
 def get_recipes():
     output_data = {}
     '''
@@ -58,7 +58,7 @@ def get_recipes():
             kcal  = parts[1].strip().replace("kcal", "")
             map_strIngredient_2_kcal100g[ingredient.lower()] = kcal
 
-   #We generated a ChatGPT conversion list between quantities like "tablespoon" and units of 100g
+   #We generated a ChatGPT conversion list between quantities like "tablespoon" and grammes
     #This part cleans up the ChatGPT-generated calorie list and puts it into the map_strMeasure_strIngredient_2_weight dictionary
     map_strMeasure_strIngredient_2_weight = {}
     with open(os.path.join("data_recipes", "strMeasure_strIngredient_weight.txt"), 'r') as f:
