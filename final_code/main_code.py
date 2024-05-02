@@ -2,7 +2,52 @@ import streamlit as st
 import requests as rq
 import json
 from PIL import Image
+import urllib.request
 import io
+
+class Chosen_Meal:
+    #we define a class Chosen_Meal that is destined to facilitate working with the results of the recipe_search function
+    
+    def __init__ (self, mealname): #three attributes: name, full recipe attributes dictionary, recipe full text
+        self.mealname = str(mealname)
+        self.fullrecipe = rq.get("https://www.themealdb.com/api/json/v1/1/search.php?s="+str(mealname)).json()["meals"][0]
+        #the recipe attributes dictionary is imported live from the TheMealDB API
+        self.recipetext = self.fullrecipe["strInstructions"]
+        
+        self.ingredientswithquantities = {}
+        #dictionary of all recipe ingredients with their quantities
+        for numbertotwenty in range(1, 21):
+            self.ingredientswithquantities[self.fullrecipe["strIngredient"+str(numbertotwenty)]] = f'{str(self.fullrecipe["strMeasure"+str(numbertotwenty)])}'
+        
+        self.ingredients_text = ""
+        #text form of the ingredients list
+        for ingredient, quantity in self.ingredientswithquantities.items():
+            if ingredient:
+                self.ingredients_text += f'{ingredient}: {quantity}\n'
+    
+    def __str__ (self):
+        #string representation shows text with recipe name, a formatted list of ingredients, and the recipe preparation text
+        return f'''{self.mealname}:\n\n
+    Ingredients:\n
+    {self.ingredients_text}\n
+    {self.recipetext}'''
+    
+    def photo(self):
+        #object method to show a photo
+        image_URL = self.fullrecipe["strMealThumb"]
+        with urllib.request.urlopen(image_URL) as url:
+            f = io.BytesIO(url.read())
+        img = Image.open (f)
+        return img.show ()
+
+
+
+#importing ingredients directly from TheMealDB API
+def fetch_ingredients():
+    response = requests.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
+    data = response.json()
+    ingredients = [item["strIngredient"] for item in data["meals"]]
+    return ingredients
 
 #importing saved reformatted database of recipes with ingredients
 recipedict_withingredients = dict(rq.get("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withingredients.json").json())
@@ -42,46 +87,29 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
     return recipes_result
 
 
-ingredientslist = ["Veal", "Basil Leaves", "Carrot"]
-chosen_recipeslist = list(recipesearch(ingredientslist, recipedict_withingredients).keys())
 
-from PIL import Image
-import urllib.request
-import io
 
-class Chosen_Meal:
-    #we define a class Chosen_Meal that is destined to facilitate working with the results of the recipe_search function
-    
-    def __init__ (self, mealname): #three attributes: name, full recipe attributes dictionary, recipe full text
-        self.mealname = str(mealname)
-        self.fullrecipe = rq.get("https://www.themealdb.com/api/json/v1/1/search.php?s="+str(mealname)).json()["meals"][0]
-        #the recipe attributes dictionary is imported live from the TheMealDB API
-        self.recipetext = self.fullrecipe["strInstructions"]
-        
-        self.ingredientswithquantities = {}
-        #dictionary of all recipe ingredients with their quantities
-        for numbertotwenty in range(1, 21):
-            self.ingredientswithquantities[self.fullrecipe["strIngredient"+str(numbertotwenty)]] = f'{str(self.fullrecipe["strMeasure"+str(numbertotwenty)])}'
-        
-        self.ingredients_text = ""
-        #text form of the ingredients list
-        for ingredient, quantity in self.ingredientswithquantities.items():
-            if ingredient:
-                self.ingredients_text += f'{ingredient}: {quantity}\n'
-               
+# Streamlit interface component
+st.title("Chichou's ingredient finder")
+ingredients = fetch_ingredients()
+selected_ingredients = list(st.multiselect('Select your ingredients:', ingredients))
 
-    
-    def __str__ (self):
-        #string representation shows text with recipe name, a formatted list of ingredients, and the recipe preparation text
-        return f'''{self.mealname}:\n\n
-    Ingredients:\n
-    {self.ingredients_text}\n
-    {self.recipetext}'''
-    
-    def photo(self):
-        #object method to show a photo
-        image_URL = self.fullrecipe["strMealThumb"]
-        with urllib.request.urlopen(image_URL) as url:
-            f = io.BytesIO(url.read())
-        img = Image.open (f)
-        return img.show ()
+if selected_ingredients:
+    recipes = fetch_recipes()
+    recommended_recipes = recipesearch(selected_ingredients, recipedict_withingredients)
+    for recipe_name, score in recommended_recipes.items():
+        if st.button(f"{recipe_name} (matches: {score})"):
+            response = requests.get(f"https://www.themealdb.com/api/json/v1/1/search.php?s={recipe_name}")
+            recipe_details = response.json()['meals'][0]
+            image_url = recipe_details['strMealThumb']
+            st.image(image_url, caption=recipe_name, width=300)
+            st.write(f"### Ingredients and Instructions for {recipe_name}")
+            for i in range(1, 21):
+                ingredient = recipe_details.get(f'strIngredient{i}', None)
+                measure = recipe_details.get(f'strMeasure{i}', None)
+                if ingredient and measure:
+                    st.write(f"{ingredient}: {measure}")
+            st.write("### Instructions")
+            st.write(recipe_details['strInstructions'])
+else:
+    st.write("Please select some ingredients to find recipes.")
