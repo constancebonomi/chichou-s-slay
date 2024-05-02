@@ -1,5 +1,5 @@
 import requests as rq 
-
+import matplotlib.pyplot as plt
 import string as alphabet 
 alphabet_letter_list = list(alphabet.ascii_lowercase)
 
@@ -122,7 +122,7 @@ def get_recipes():
 
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
+
     fig,ax = plt.subplots(1)
     #download_recipes()
 
