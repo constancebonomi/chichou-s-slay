@@ -6,6 +6,7 @@ alphabet_letter_list = list(alphabet.ascii_lowercase)
 import json 
 import os 
 
+#the function below imports all recipes from TheMealDB API and saves them in their own files via json.dump at their given address in the github repository.
 def download_recipes():
     for letter in alphabet_letter_list: 
         json_recipes = rq.get(f"https://www.themealdb.com/api/json/v1/1/search.php?f={letter}").json()
@@ -13,6 +14,9 @@ def download_recipes():
         with open(os.path.join("data_recipes", f"{letter}.json"), "w") as f:
             json.dump(json_recipes, f)
 
+#We previously ChatGPT-generated a list of calorie amounts per 100g serving for each of the ingredients in TheMealDB API.
+#get_recipes cleans up this list, joins it with our existing TheMealDB ingredients list,
+#and converts the quantities provided by TheMealDB (example: table spoon) to multiples of 100g
 def get_recipes():
     output_data = {}
     '''
@@ -43,6 +47,7 @@ def get_recipes():
 
                   }                   
     '''
+    #This part cleans up the ChatGPT-generated calorie list and puts it into the map_strIngredient_2_kcal100g dictionary
     map_strIngredient_2_kcal100g = {}
     with open(os.path.join("data_recipes", "strIngredient_kcal100g.txt"), 'r') as f:
         lines = f.readlines()
@@ -53,6 +58,8 @@ def get_recipes():
             kcal  = parts[1].strip().replace("kcal", "")
             map_strIngredient_2_kcal100g[ingredient.lower()] = kcal
 
+   #We generated a ChatGPT conversion list between quantities like "tablespoon" and units of 100g
+    #This part cleans up the ChatGPT-generated calorie list and puts it into the map_strMeasure_strIngredient_2_weight dictionary
     map_strMeasure_strIngredient_2_weight = {}
     with open(os.path.join("data_recipes", "strMeasure_strIngredient_weight.txt"), 'r') as f:
         lines = f.readlines()
