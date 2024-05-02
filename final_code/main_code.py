@@ -102,7 +102,6 @@ selected_ingredients = list(st.multiselect('Select your ingredients:', ingredien
 if selected_ingredients:
     recipes = recipedict_withingredients
     recommended_recipes = recipesearch(selected_ingredients, recipedict_withingredients)
-    recommended_recipes_objects = reciperesult_objects(recommended_recipes)
     for recipe_name, score in recommended_recipes.items():
         if st.button(f"{recipe_name} (matches: {score})"):
             chosen_meal = Chosen_Meal(str(recipe_name))
