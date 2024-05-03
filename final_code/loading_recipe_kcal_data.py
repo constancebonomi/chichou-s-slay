@@ -35,30 +35,17 @@ def get_recipes():
     '''
     #This part cleans up the ChatGPT-generated calorie list and puts it into the map_strIngredient_2_kcal100g dictionary
     map_strIngredient_2_kcal100g = {}
-    with open(os.path.join("data_recipes", "strIngredient_kcal100g.txt"), 'r') as f:
-        lines = f.readlines()
+    calorieslistimport = str(rq.get("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/usecase_example/data_recipes/strIngredient_kcal100g.txt").content.decode("utf-8"))
+    calorieslistimport = calorieslistimport.replace("kcal", "")
+    
+    # Splitting the import into lines
+    lines = calorieslistimport.split("\n")
 
-        for line in lines:
-            parts = line.split(':')
-            ingredient = parts[0].strip()
-            kcal  = parts[1].strip().replace("kcal", "")
-            map_strIngredient_2_kcal100g[ingredient.lower()] = kcal
-
-    # Given string
-
-string = str(rq.get("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/usecase_example/data_recipes/strIngredient_kcal100g.txt").content.decode("utf-8"))
-
-# Split the string into lines
-lines = string.split("\n")
-
-# Create an empty dictionary to store the ingredients and their calorie counts
-ingredient_dict = {}
-
-# Iterate over the lines and add them to the dictionary
-for line in lines:
-    if line:
-        key, value = line.split(": ")
-        ingredient_dict[key] = value
+    #Putting it into the dictionary
+    for line in lines:
+        if line:
+            ingredientname, calories = line.split(": ")
+            map_strIngredient_2_kcal100g[ingredientname] = calories
 
    #We generated a ChatGPT conversion list between quantities like "tablespoon" and grammes
     #This part cleans up the ChatGPT-generated calorie list and puts it into the map_strMeasure_strIngredient_2_weight dictionary
