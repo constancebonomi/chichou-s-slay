@@ -52,7 +52,7 @@ class Chosen_Meal:
         return image_url
 
 
-#2. (Jeremi)
+#2. (Alex)
 #importing ingredients directly from TheMealDB API
 def fetch_ingredients():
     response = rq.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
