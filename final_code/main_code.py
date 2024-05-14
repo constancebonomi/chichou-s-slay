@@ -6,7 +6,7 @@ import urllib.request
 import io
 import matplotlib.pyplot as plt
 
-#This code has 4 parts.
+#This code has 6 parts.
 #1. The class Chosen_Meal is defined to facilitate working with the chosen recipe down the road
 #2. The list of all ingredients is imported from the TheMealDB API directly (live API connection)
 #3. A reformatted version of the TheMealDB recipes database is imported from our own json document saved on github, https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withingredients.json
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
     #6c. The reformatted table is available under https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withkcal.json
     #6d. Our code for converting the ChatGPT output is available under https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/loading_recipe_kcal_data.json
 
-#1. 
+#1. (Constance)
 class Chosen_Meal:
     #we define a class Chosen_Meal that is destined to facilitate working with the results of the recipe_search function
     
@@ -52,7 +52,7 @@ class Chosen_Meal:
         return image_url
 
 
-#2.
+#2. (Jeremi)
 #importing ingredients directly from TheMealDB API
 def fetch_ingredients():
     response = rq.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
@@ -60,11 +60,11 @@ def fetch_ingredients():
     ingredients = [item["strIngredient"] for item in data["meals"]]
     return ingredients
     
-#3.
+#3. (Jeremi)
 #importing saved reformatted database of recipes with ingredients
 recipedict_withingredients = dict(rq.get("https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withingredients.json").json())
 
-#4.
+#4. (Jeremi)
 def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {}):
     
     #This function takes a list of ingredients and returns the 5 recipes in the TheMealDB database
@@ -101,7 +101,7 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
 
 
 
-#5. Streamlit interface component
+#5. Streamlit interface component (Esteban)
 st.title("Recipe Finder")
 ingredients = fetch_ingredients()
 selected_ingredients = list(st.multiselect('Select your ingredients:', ingredients)) #multiselect list with search bar
@@ -117,7 +117,8 @@ if selected_ingredients:
             st.write(chosen_meal)
             st.write("Calorie overview:")
             
-#6. We define a matplotlib plot that, for the chosen recipe, shows the calories of each ingredients and the sum total of recipe calories
+#6. (Sofia)
+#We define a matplotlib plot that, for the chosen recipe, shows the calories of each ingredients and the sum total of recipe calories
             fig,ax = plt.subplots(1)
             recipe_name = str(recipe_name)
             ingredients = rq.get('https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withkcal.json').json()[recipe_name]
