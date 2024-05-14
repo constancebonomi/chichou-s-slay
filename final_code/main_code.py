@@ -101,8 +101,8 @@ if selected_ingredients:
             st.write(f"### Ingredients and Instructions for {recipe_name}")
             st.write(chosen_meal)
             st.write("Calorie overview:")
-            fig,ax = plt.subplots(1)
             
+            fig,ax = plt.subplots(1)
             recipe_name = str(recipe_name)
             ingredients = rq.get('https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withkcal.json').json()[recipe_name]
             sum_kcal = 0
@@ -136,6 +136,6 @@ if selected_ingredients:
             ax.grid()
             fig.tight_layout()
             
-            st.write(plt.show())
+            st.write(fig)
 else:
     st.write("Please select some ingredients to find recipes.")
