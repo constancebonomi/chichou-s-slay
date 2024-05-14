@@ -4,6 +4,7 @@ import json
 from PIL import Image
 import urllib.request
 import io
+import matplotlib.pyplot as plt
 
 class Chosen_Meal:
     #we define a class Chosen_Meal that is destined to facilitate working with the results of the recipe_search function
