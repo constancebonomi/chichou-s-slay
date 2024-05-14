@@ -50,3 +50,6 @@ for recipedescription in reformatted_allrecipeslist:
 
 with open(os.path.join("final_code", "recipedict_withingredients.json"), "w") as f:
     json.dump(recipedict_withingredients, f)
+
+#Beyond this last line of code, it is also possible to print(recpiedict_withingredients) and copy paste it manually into the github file 
+#https://github.com/constancebonomi/chichou-s-slay/edit/main/final_code/recipedict_withingredients.json
