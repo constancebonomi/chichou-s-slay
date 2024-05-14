@@ -99,7 +99,42 @@ if selected_ingredients:
             st.image(chosen_meal.photo(), caption=recipe_name, width=300)
             st.write(f"### Ingredients and Instructions for {recipe_name}")
             st.write(chosen_meal)
-            if st.button("Check calories!"):
-                st.write("The column chart for calories is in development")
+            st.write("Calorie overview:")
+            fig,ax = plt.subplots(1)
+            
+            recipe_name = str(recipe_name)
+            ingredients = rq.get('https://raw.githubusercontent.com/constancebonomi/chichou-s-slay/main/final_code/recipedict_withkcal.json').json()[recipe_name]
+            sum_kcal = 0
+            idx = 0
+            idx_name_list = []
+            for i in range(20):
+                ingredient = ingredients[f"ingredient_{i}"]
+            
+            
+                kcal = ingredient["calories_100g"]
+                amount = ingredient["amount"]
+            
+                if kcal == None or amount == None:
+                    continue
+                kcal = amount*kcal/100.0
+            
+                sum_kcal += kcal
+            
+                ax.bar(idx, kcal, color = "green")
+                idx_name_list.append(f"{ingredient['name']}\n{amount}g")
+                idx += 1
+            
+            idx_sum = idx+2
+            
+            
+            ax.bar(idx_sum, sum_kcal)
+            ax.set_xticks(list(range(len(idx_name_list)))+[idx_sum],idx_name_list+["Total calories"], fontsize=10, rotation=45)
+            ax.set_xlabel('Ingredients', fontsize=12)
+            ax.set_ylabel('Calories (kcal)', fontsize=12)
+            ax.set_title(f"Recipe: {recipe_name}", fontsize=15)
+            ax.grid()
+            fig.tight_layout()
+            
+            st.write(plt.show())
 else:
     st.write("Please select some ingredients to find recipes.")
