@@ -102,7 +102,7 @@ def recipesearch (chosen_ingredients_list = [], recipedict_withingredients = {})
 
 
 #5. Streamlit interface component (Esteban)
-st.title("Recipe Finder")
+st.title("MealCraft")
 ingredients = fetch_ingredients()
 selected_ingredients = list(st.multiselect('Select your ingredients:', ingredients)) #multiselect list with search bar
 
